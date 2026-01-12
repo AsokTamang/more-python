@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def get_connection():
+def get_connection(commit= False):
     db = mysql.connector.connect(
         host="localhost",
         user=os.getenv("USERNAME"),
@@ -23,8 +23,10 @@ def get_connection():
     db_cursor = db.cursor(
         dictionary=True)  # here cursor is like a sql pointer which helps to run the sql query on databases and with using dictionary=True we
 
-    yield db_cursor  # yielding the cursor object which can be used in other functions at its current state
+    yield db_cursor # yielding the cursor object which can be used in other functions at its current state
 
+    if commit:  #only when the passed commit is true , we commit the staged changes into our database
+        db.commit()
     db_cursor.close()
     db.close()
 
@@ -46,5 +48,11 @@ def get_expense_date_data(expense_date):  # retrieving the expense data based on
             print(expense)
 
 
+
+def insert_into_database(expense_date,amount,category,notes):
+    with get_connection(commit=True) as cursor:
+        cursor.execute("INSERT INTO expenses (expense_date,amount,category,notes) VALUES (%s, %s, %s, %s)",[expense_date,amount,category,notes])    #inserting the new data
 if __name__ == '__main__':
-    get_expense_date_data('2024-08-02')
+    insert_into_database('2026-06-07', 200, 'tab', 'work')
+    get_expense_date_data('2026-06-07')
+
