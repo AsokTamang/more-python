@@ -8,6 +8,11 @@ data = {
     "number_of_guests": 8,
     "special_requests": "Table near the window"
 }
+data2 = {
+    "customer_name": "asok",
+    "number_of_guests": 3,
+    "special_requests": "Table near the window"
+}
 
 def is_valid(value: Any) -> datetime.datetime:
     if type(value) == str:
@@ -28,11 +33,11 @@ def create_reservation(data):
     try:
         r = Reservation(customer_name=data.get("customer_name"), reservation_date=data.get("reservation_date"),
                         number_of_guests=data.get("number_of_guests"))
-        print(r)
+        return r
     except ValidationError as e:
         print('Validation error occured',e)
 
-create_reservation(data)
+print(create_reservation(data2))
 
 
 
